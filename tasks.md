@@ -1,57 +1,110 @@
-# OpenMart HTML Project - Quick Finish Checklist
+# OpenMart Development Plan
 
-## 1️⃣ Core Features
+## 1️⃣ Core Setup
 
-- [ ] **Authentication**
-  - Signup and login are working.
-  - Ensure sessions work correctly (log in/out).
-- [ ] **Post Management**
-  - Create, read, update, delete posts.
-  - Ensure only the owner can edit/delete their post.
-- [ ] **Category Management**
-  - Create and list categories.
-  - Assign posts to categories.
-
-## 2️⃣ Templates & UI
-
-- [ ] **Base Template**
-  - Header, footer, nav menu.
-- [ ] **Flash/Error Messages**
-  - Display validation or business errors.
-- [ ] **Forms for Signup/Login/Post**
-  - Keep simple; no need for fancy JS.
-
-## 3️⃣ Tests
-
-- [ ] **Service-Level Tests**
-  - Keep existing signup/login tests.
-  - Add minimal tests for posts/categories.
-- [ ] **Optional Handler Tests**
-  - Only if time allows; focus on core functionality first.
-
-## 4️⃣ Misc / Finishing Touches
-
+- [ ] **Project Skeleton**
+  - `main.go` bootstraps the app
+  - App struct with loggers, templates, services, session manager
+- [ ] **Middleware**
+  - Logging middleware
+  - Panic recovery
+  - Request ID
 - [ ] **Static Files**
-  - CSS, JS, images are served correctly.
-- [ ] **Routing**
-  - All URLs work (`/`, `/login`, `/signup`, `/posts`, `/categories`).
-- [ ] **Session Management**
-  - Users stay logged in; logout works.
-- [ ] **Error Handling**
-  - Keep simple: flash messages in HTML.
+  - Serve `/static/css`, `/static/js`, `/static/img`
+- [ ] **Templates**
+  - Base template (`base.html`)
+  - Home page (`/`)
+  - Success/failure notices
+  - Error pages (404, 500)
 
-## 5️⃣ Optional Polishing (If Time Allows)
-
-- Input trimming/validation in forms.
-- Flash messages for success/failure.
-- Simple pagination for posts.
-- Minor CSS improvements.
+- [ ] **App Helpers**
+  - Render helpers for templates
+  - Error handling helpers
+    ✅ _Test:_ Start server → confirm homepage works, static files load, errors render.
 
 ---
 
-💡 **Strategy**
+## 2️⃣ Session & Flash Infrastructure
 
-- Focus on end-to-end working functionality first.
-- Skip optional refactors like `SignupRequest` or fancy error wrapping.
-- Once everything works, finish tests and polish the UI.
-- After the project is done, move on to REST APIs, caching, or other advanced Go topics.
+- [ ] **Session Manager**
+  - Integrate `scs` session manager
+- [ ] **Flash Messages**
+  - Add helper to set/read flash from session
+  - Display flash in base template
+    ✅ _Test:_ Set a flash → ensure it appears once, then disappears.
+
+---
+
+## 3️⃣ Database & Service Layer
+
+- [ ] **Migrations**
+  - Users table
+  - Posts table
+  - Categories table
+- [ ] **Services**
+  - `AuthService`
+  - `PostService`
+  - `CategoryService`
+- [ ] **Testing**
+  - Use testcontainers
+  - Write tests for signup/login, post create, category create
+    ✅ _Test:_ Run integration tests → confirm services behave as expected.
+
+---
+
+## 4️⃣ Authentication UI
+
+- [ ] **Routes**
+  - `/signup`, `/login`, `/logout`
+- [ ] **Forms & Templates**
+  - Signup form
+  - Login form
+- [ ] **Integration**
+  - Hook into `AuthService`
+  - Add login-required middleware
+    ✅ _Test:_ Signup → login → logout. Confirm flash messages show.
+
+---
+
+## 5️⃣ Posts & Categories UI
+
+- [ ] **Post Routes**
+  - `/posts`
+  - `/posts/create`
+  - `/posts/{id}`
+- [ ] **Category Routes**
+  - `/categories`
+- [ ] **Templates**
+  - List posts
+  - Show post
+  - Create post form
+  - List categories
+- [ ] **Ownership Check**
+  - Only post owner can edit/delete
+    ✅ _Test:_ User A creates a post → User B cannot edit/delete.
+
+---
+
+## 6️⃣ Polishing
+
+- [ ] **Validation**
+  - Required fields
+  - Input trimming
+- [ ] **CSS**
+  - Minimal styling
+    ✅ _Test:_ Try invalid forms → see correct error flash.
+
+---
+
+## 7️⃣ Final Touches
+
+- [ ] **README**
+  - Setup instructions
+  - Usage instructions
+- [ ] **Docker (Optional)**
+  - Dockerfile
+  - docker-compose for DB
+- [ ] **Git Cleanup**
+  - Merge feature branches into `main`
+  - Delete temp branches
+    ✅ _Test:_ Fresh clone → `go run main.go` → app works.
