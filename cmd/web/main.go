@@ -7,9 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
-	"github.com/alexedwards/scs/postgresstore"
 	"github.com/alexedwards/scs/v2"
 
 	"github.com/go-playground/form/v4"
@@ -61,14 +59,8 @@ func main() {
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-	sessionManager := scs.New()
-	sessionManager.Store = postgresstore.New(conn)
 
-	sessionManager.Lifetime = 24 * time.Hour
-	sessionManager.IdleTimeout = 30 * time.Minute
-	sessionManager.Cookie.HttpOnly = true
-	sessionManager.Cookie.Secure = true // only if using HTTPS
-	sessionManager.Cookie.SameSite = http.SameSiteLaxMode
+	sessionManager := newSessionManager(conn)
 	app := &Server{
 		infoLog:        infoLog,
 		errorLog:       errorLog,

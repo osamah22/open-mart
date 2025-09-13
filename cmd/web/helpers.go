@@ -1,9 +1,14 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"net/http"
 	"runtime/debug"
+	"time"
+
+	"github.com/alexedwards/scs/postgresstore"
+	"github.com/alexedwards/scs/v2"
 )
 
 // render Retrieve the appropriate template set from the cache based on the page
@@ -38,4 +43,17 @@ func (app *Server) clientError(w http.ResponseWriter, statusCode int) {
 
 func (app *Server) notFound(w http.ResponseWriter) {
 	app.render(w, 404, "not-found.html", nil)
+}
+
+func newSessionManager(conn *sql.DB) *scs.SessionManager {
+	sessionManager := scs.New()
+	sessionManager.Store = postgresstore.New(conn)
+
+	sessionManager.Lifetime = 24 * time.Hour
+	sessionManager.IdleTimeout = 30 * time.Minute
+	sessionManager.Cookie.HttpOnly = true
+	sessionManager.Cookie.Secure = true // only if using HTTPS
+	sessionManager.Cookie.SameSite = http.SameSiteLaxMode
+
+	return sessionManager
 }
