@@ -1,5 +1,12 @@
-
 -- +goose Up
+-- +goose StatementBegin
+SELECT 'up SQL query';
+create extension if not exists "uuid-ossp"; --an extension responsible for generating uuid
+CREATE TABLE IF NOT EXISTS categories (
+    id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    parent_id  uuid, -- for sub-directories
+    name VARCHAR(255) UNIQUE NOT NULL
+);
 
 -- Parents
 INSERT INTO categories (name, parent_id) VALUES ('Vehicles', NULL);
@@ -28,6 +35,10 @@ INSERT INTO categories (name, parent_id) SELECT 'Apartments', id FROM categories
 INSERT INTO categories (name, parent_id) SELECT 'Villas & Houses', id FROM categories WHERE name='Real Estate';
 INSERT INTO categories (name, parent_id) SELECT 'Land & Plots', id FROM categories WHERE name='Real Estate';
 INSERT INTO categories (name, parent_id) SELECT 'Commercial Properties', id FROM categories WHERE name='Real Estate';
+-- +goose StatementEnd
 
 -- +goose Down
-delete from categories;
+-- +goose StatementBegin
+SELECT 'down SQL query';
+drop table if exists cities;
+-- +goose StatementEnd
