@@ -47,6 +47,7 @@ func (app *Server) notFound(w http.ResponseWriter) {
 
 func newSessionManager(conn *sql.DB) *scs.SessionManager {
 	sessionManager := scs.New()
+
 	sessionManager.Store = postgresstore.New(conn)
 
 	sessionManager.Lifetime = 24 * time.Hour
@@ -54,6 +55,5 @@ func newSessionManager(conn *sql.DB) *scs.SessionManager {
 	sessionManager.Cookie.HttpOnly = true
 	sessionManager.Cookie.Secure = true // only if using HTTPS
 	sessionManager.Cookie.SameSite = http.SameSiteLaxMode
-
 	return sessionManager
 }
