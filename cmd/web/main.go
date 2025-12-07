@@ -7,10 +7,10 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
-	"github.com/alexedwards/scs/postgresstore"
 	"github.com/alexedwards/scs/v2"
+	"github.com/osamah22/open-mart/internal/models"
+	"github.com/osamah22/open-mart/internal/services"
 
 	"github.com/go-playground/form/v4"
 	_ "github.com/lib/pq"
@@ -18,11 +18,12 @@ import (
 )
 
 type Server struct {
-	errorLog       *log.Logger
-	infoLog        *log.Logger
-	sessionManager *scs.SessionManager
-	formDecoder    *form.Decoder
-	templateCache  map[string]*template.Template
+	errorLog        *log.Logger
+	infoLog         *log.Logger
+	sessionManager  *scs.SessionManager
+	formDecoder     *form.Decoder
+	templateCache   map[string]*template.Template
+	categoryService services.CategoryService
 }
 
 // loading the enviroment variables for testing
@@ -53,7 +54,6 @@ func main() {
 		log.Fatal("Could not connect to DB:", err)
 	}
 	defer conn.Close()
-
 	templateCache, err := newTemplateCache()
 	if err != nil {
 		log.Fatal(err)
@@ -61,20 +61,17 @@ func main() {
 
 	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-	sessionManager := scs.New()
-	sessionManager.Store = postgresstore.New(conn)
 
-	sessionManager.Lifetime = 24 * time.Hour
-	sessionManager.IdleTimeout = 30 * time.Minute
-	sessionManager.Cookie.HttpOnly = true
-	sessionManager.Cookie.Secure = true // only if using HTTPS
-	sessionManager.Cookie.SameSite = http.SameSiteLaxMode
+	sessionManager := newSessionManager(conn)
+	queries := models.New(conn)
+
 	app := &Server{
-		infoLog:        infoLog,
-		errorLog:       errorLog,
-		templateCache:  templateCache,
-		formDecoder:    form.NewDecoder(),
-		sessionManager: sessionManager,
+		infoLog:         infoLog,
+		errorLog:        errorLog,
+		templateCache:   templateCache,
+		formDecoder:     form.NewDecoder(),
+		sessionManager:  sessionManager,
+		categoryService: services.NewCategoryService(queries),
 	}
 	server := app.routes()
 

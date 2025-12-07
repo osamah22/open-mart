@@ -26,7 +26,7 @@ func TestSecureHeaders(t *testing.T) {
 
 	rs := rr.Result()
 
-	expectedValue := "default-src 'self'; style-src 'self' fonts.googleapis.com; font-src fonts.gstatic.com"
+	expectedValue := "default-src 'self'; style-src 'self' fonts.googleapis.com; font-src fonts.gstatic.com 'self'"
 	assert.Equal(t, rs.Header.Get("Content-Security-Policy"), expectedValue)
 
 	expectedValue = "origin-when-cross-origin"
