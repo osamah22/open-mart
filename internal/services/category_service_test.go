@@ -1,38 +1,42 @@
 package services
 
 import (
+	"fmt"
+	"log"
 	"testing"
 
-	"github.com/google/uuid"
 	"github.com/osamah22/open-mart/internal/models"
+	"github.com/spf13/viper"
+	"github.com/stretchr/testify/require"
 )
 
-func TestCreateCategory(t *testing.T) {
-	testDB := models.NewTestingDatabase(t)
-	queries := models.New(testDB)
-	s := NewCategoryService(queries)
-	testTables := []struct {
-		TestName string
-		Name     string
-		ParentID uuid.NullUUID
-	}{
-		{
-			TestName: "Valid",
-			Name:     "category",
-		},
-		{
-			TestName: "duplicate",
-			Name:     "duplicate",
-		},
-	}
+func loadEnv() {
+	viper.SetConfigName(".env") // name of file (no path)
+	viper.SetConfigType("env")  // dotenv format
 
-	for _, test := range testTables {
-		t.Run(test.TestName, func(t *testing.T) {
-			params := models.CreateCategoryParams{
-				Name:     test.TestName,
-				ParentID: test.ParentID,
-			}
-			s.CreateCategory(t.Context(), params)
-		})
+	viper.AddConfigPath(".")         // current folder
+	viper.AddConfigPath("../../")    // go up two levels
+	viper.AddConfigPath("../../../") // useful if running tests from deeper dirs
+
+	viper.AutomaticEnv() // env vars override the file
+
+	err := viper.ReadInConfig()
+	if err != nil {
+		log.Fatal("error loading config:", err)
 	}
+}
+
+func TestGetCategory(t *testing.T) {
+	loadEnv()
+	fmt.Println("viper:", viper.GetString("DB_URL"))
+
+	db, err := models.NewDatabase()
+	require.NoError(t, err)
+
+	queries := models.New(db)
+	s := NewCategoryService(queries)
+
+	categories, err := s.ListCategories(t.Context())
+	require.NoError(t, err)
+	require.NotEmpty(t, categories)
 }

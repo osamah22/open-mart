@@ -3,10 +3,8 @@ package services
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/osamah22/open-mart/internal/models"
-	"github.com/osamah22/open-mart/internal/validator"
 )
 
 var (
@@ -16,7 +14,7 @@ var (
 
 type CategoryService interface {
 	ListCategories(ctx context.Context) (*[]models.Category, error)
-	CreateCategory(ctx context.Context, req models.CreateCategoryParams) (*models.Category, error)
+	SlugExists(ctx context.Context, slug string) bool
 }
 
 type categoryService struct {
@@ -32,42 +30,20 @@ func NewCategoryService(queries *models.Queries) CategoryService {
 func (s *categoryService) ListCategories(ctx context.Context) (*[]models.Category, error) {
 	categories, err := s.queries.ListCategories(ctx)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("ListCategories: %w", err)
+	}
+
+	if len(categories) == 0 {
+		return nil, ErrNoCategories
 	}
 
 	return &categories, nil
 }
 
-func (s *categoryService) CreateCategory(ctx context.Context, req models.CreateCategoryParams) (*models.Category, error) {
-	req.Name = strings.TrimSpace(req.Name)
-	err := validator.ValidateCreateCategory(&req)
+func (s *categoryService) SlugExists(ctx context.Context, slug string) bool {
+	exists, err := s.queries.CateogryExists(ctx, slug)
 	if err != nil {
-		if strings.Contains(err.Error(), "duplicate key") {
-			return nil, ErrDuplicateCategory
-		}
-		return nil, err
+		return false
 	}
-
-	category, err := s.queries.CreateCategory(ctx, req)
-	if err != nil {
-		return nil, err
-	}
-	return &category, err
-}
-
-func (s *categoryService) UpdateCategory(ctx context.Context, req models.UpdateCategoryParams) (*models.Category, error) {
-	req.Name = strings.TrimSpace(req.Name)
-	err := validator.ValidateUpdateCategory(&req)
-	if err != nil {
-		return nil, err
-	}
-
-	category, err := s.queries.UpdateCategory(ctx, req)
-	if err != nil {
-		if strings.Contains(err.Error(), "duplicate key") {
-			return nil, ErrDuplicateCategory
-		}
-		return nil, err
-	}
-	return &category, err
+	return exists
 }
