@@ -1,5 +1,5 @@
 {{define "base"}}
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -12,10 +12,11 @@
 </head>
 
 <body>
-    <header>
-        <h1><a href="/">Open Mart</a></h1>
-    </header>
-    {{template "nav" .}}
+    {{template "nav" .}} {{with .error}}
+    <div class="error">ERROR: {{.}}</div>
+    {{end}} {{with .flash}}
+    <div class="flash">INFO: {{.}}</div>
+    {{end}}
     <main>{{template "main" .}}</main>
     <footer>Powered by <a href="https://golang.org/">Go</a></footer>
     <!-- And include the JavaScript file -->

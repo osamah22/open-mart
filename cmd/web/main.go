@@ -9,6 +9,8 @@ import (
 	"os"
 
 	"github.com/alexedwards/scs/v2"
+	"github.com/osamah22/open-mart/internal/models"
+	"github.com/osamah22/open-mart/internal/services"
 
 	"github.com/go-playground/form/v4"
 	_ "github.com/lib/pq"
@@ -16,11 +18,12 @@ import (
 )
 
 type Server struct {
-	errorLog       *log.Logger
-	infoLog        *log.Logger
-	sessionManager *scs.SessionManager
-	formDecoder    *form.Decoder
-	templateCache  map[string]*template.Template
+	errorLog        *log.Logger
+	infoLog         *log.Logger
+	sessionManager  *scs.SessionManager
+	formDecoder     *form.Decoder
+	templateCache   map[string]*template.Template
+	categoryService services.CategoryService
 }
 
 // loading the enviroment variables for testing
@@ -51,7 +54,6 @@ func main() {
 		log.Fatal("Could not connect to DB:", err)
 	}
 	defer conn.Close()
-
 	templateCache, err := newTemplateCache()
 	if err != nil {
 		log.Fatal(err)
@@ -61,12 +63,15 @@ func main() {
 	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
 
 	sessionManager := newSessionManager(conn)
+	queries := models.New(conn)
+
 	app := &Server{
-		infoLog:        infoLog,
-		errorLog:       errorLog,
-		templateCache:  templateCache,
-		formDecoder:    form.NewDecoder(),
-		sessionManager: sessionManager,
+		infoLog:         infoLog,
+		errorLog:        errorLog,
+		templateCache:   templateCache,
+		formDecoder:     form.NewDecoder(),
+		sessionManager:  sessionManager,
+		categoryService: services.NewCategoryService(queries),
 	}
 	server := app.routes()
 

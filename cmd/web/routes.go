@@ -10,7 +10,7 @@ func (app *Server) routes() http.Handler {
 	router := chi.NewRouter()
 
 	router.NotFound(func(w http.ResponseWriter, r *http.Request) {
-		app.notFound(w)
+		app.notFound(w, r)
 	})
 
 	router.Use(app.recoverPanic)
@@ -22,5 +22,6 @@ func (app *Server) routes() http.Handler {
 	router.Handle("/static/*", http.StripPrefix("/static", fileServer))
 
 	router.Get("/", app.handleHome)
+	router.Get("/{slug}", app.handleListPosts)
 	return router
 }

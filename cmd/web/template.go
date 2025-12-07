@@ -15,6 +15,12 @@ func (app *Server) newDataTemplate(r *http.Request) map[string]any {
 		data["flash"] = app.sessionManager.Pop(r.Context(), "flash")
 	}
 	data["current_year"] = time.Now().Year()
+	categories, err := app.categoryService.ListCategories(r.Context())
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		data["categories"] = categories
+	}
 
 	return data
 }

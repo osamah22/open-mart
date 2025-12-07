@@ -41,8 +41,9 @@ func (app *Server) clientError(w http.ResponseWriter, statusCode int) {
 	http.Error(w, http.StatusText(statusCode), http.StatusInternalServerError)
 }
 
-func (app *Server) notFound(w http.ResponseWriter) {
-	app.render(w, 404, "not-found.html", nil)
+func (app *Server) notFound(w http.ResponseWriter, r *http.Request) {
+	data := app.newDataTemplate(r)
+	app.render(w, 404, "not-found.html", data)
 }
 
 func newSessionManager(conn *sql.DB) *scs.SessionManager {

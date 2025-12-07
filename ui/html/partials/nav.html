@@ -1,0 +1,15 @@
+{{define "nav"}}
+<nav>
+    <link rel="stylesheet" href="/static/css/nav.css" />
+    <link rel="stylesheet" href="/static/css/all.min.css" />
+    <link rel="stylesheet" href="/static/css/all.css" />
+    <h1 id="title">Open Mart</a></h1></a>
+
+    {{range .categories}} {{if not .ParentID.Valid}}
+    <a href="/{{.Slug}}" class="nav-icon" title="{{.Name}}">
+        <i class="{{.LogoClass}}"></i>
+        <span class="category-name">{{.Name}}</span>
+    </a>
+    {{end}} {{end}}
+</nav>
+{{end}}
