@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # OpenMart Development Plan
 Core Features
 🗂️ Categories (Static)
