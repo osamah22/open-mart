@@ -1,80 +1,27 @@
 package main
 
 import (
-	"database/sql"
-	"flag"
-	"html/template"
 	"log"
-	"net/http"
-	"os"
+	"strconv"
 
-	"github.com/alexedwards/scs/v2"
-	"github.com/osamah22/open-mart/internal/models"
-	"github.com/osamah22/open-mart/internal/services"
-
-	"github.com/go-playground/form/v4"
 	_ "github.com/lib/pq"
-	"github.com/spf13/viper"
 )
 
-type Server struct {
-	errorLog        *log.Logger
-	infoLog         *log.Logger
-	sessionManager  *scs.SessionManager
-	formDecoder     *form.Decoder
-	templateCache   map[string]*template.Template
-	categoryService services.CategoryService
-}
-
-// loading the enviroment variables for testing
-func loadEnv() {
-	viper.SetConfigFile(".env") // the path to the parent project (where the env file exists)
-	err := viper.ReadInConfig()
-	if err != nil {
-		log.Fatal("error while loading the config files:", err)
-	}
-}
-
 func main() {
-	loadEnv()
-
-	addr := flag.String("address", ":7070", "Network Address\tDefault: :7070")
-	flag.Parse()
-
-	loadEnv()
-
-	dbUrl := viper.GetString("DB_URL")
-	dbDriver := viper.GetString("DB_DRIVER")
-	if dbUrl == "" || dbDriver == "" {
-		log.Fatalf("dbUrl='%s' or dbDriver='%s' is empty", dbUrl, dbDriver)
-	}
-
-	conn, err := sql.Open(dbDriver, dbUrl)
-	if err != nil {
-		log.Fatal("Could not connect to DB:", err)
-	}
-	defer conn.Close()
-	templateCache, err := newTemplateCache()
+	// 1️⃣ Load config
+	cfg, err := LoadConfig()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	infoLog := log.New(os.Stdout, "INFO\t", log.Ldate|log.Ltime)
-	errorLog := log.New(os.Stdout, "ERROR\t", log.Ldate|log.Ltime|log.Lshortfile)
-
-	sessionManager := newSessionManager(conn)
-	queries := models.New(conn)
-
-	app := &Server{
-		infoLog:         infoLog,
-		errorLog:        errorLog,
-		templateCache:   templateCache,
-		formDecoder:     form.NewDecoder(),
-		sessionManager:  sessionManager,
-		categoryService: services.NewCategoryService(queries),
+	// 2️⃣ Create server (this wires EVERYTHING)
+	srv, err := NewServer(cfg)
+	if err != nil {
+		log.Fatal(err)
 	}
-	server := app.routes()
 
-	log.Printf("Starting server on address %s", *addr)
-	log.Fatal(http.ListenAndServe(*addr, server))
+	// 3️⃣ Run server
+	if err := srv.Router.Run("localhost:" + strconv.Itoa(cfg.PORT)); err != nil {
+		log.Fatal(err)
+	}
 }

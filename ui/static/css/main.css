@@ -1,335 +1,197 @@
-:root {
-    --primary: #10b981;
-    --primary-dark: #3a5bd0;
-    --secondary: #f8f9fa;
-    --accent: #ff6b6b;
-    --success: #10b981;
-    --text: #2d3748;
-    --text-light: #718096;
-    --border: #e2e8f0;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --transition: all 0.3s ease;
-    --radius: 8px;
-}
-
+/* --------------------------------
+   Base reset
+-------------------------------- */
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-size: 18px;
-    font-family: "Ubuntu Mono", monospace;
-}
-html, body {
-    height: 100%;
 }
 
-body {
-    line-height: 1.5;
-    background-color: var(--secondary);
-    color: var(--text);
-    overflow-y: scroll;
+:root {
+    --bg: #ffffff;
+    --border: #e5e7eb;
+    --text-main: #111827;
+    --text-muted: #374151;
+    --hover-bg: #f3f4f6;
+    --accent: #2563eb;
+    --danger: #dc2626;
 }
 
-header, nav, main, footer {
-    padding: 2px calc((100% - 800px) / 2) 0;
-}
-
-main {
-    margin-top: 54px;
-    margin-bottom: 54px;
-    min-height: calc(100vh - 345px);
-    overflow: auto;
-}
-
-h1 a {
-    font-size: 36px;
-    font-weight: bold;
-    background-image: url("/static/img/main-logo.webp");
-    background-repeat: no-repeat;
-    background-position: 0px 0px;
-    height: 36px;
-    padding-left: 50px;
-    position: relative;
-}
-
-h1 a:hover {
-    text-decoration: none;
-    color: var(--text);
-}
-
-h2 {
-    font-size: 22px;
-    margin-bottom: 36px;
-    position: relative;
-    top: -9px;
-}
-
-a {
-    color: var(--primary);
-    text-decoration: none;
-}
-
-a:hover {
-    color: var(--primary-dark);
-    text-decoration: underline;
-}
-
-textarea, input:not([type="submit"]) {
-    font-size: 18px;
-    font-family: "Ubuntu Mono", monospace;
-}
-
-header {
-    background-image: linear-gradient(to right, var(--text), var(--text) 25%, var(--primary) 25%, var(--primary) 35%, var(--primary-dark) 35%, var(--primary-dark) 45%, var(--success) 45%, var(--success) 55%, var(--accent) 55%, var(--accent) 65%, var(--primary) 65%, var(--primary) 75%, var(--accent) 85%, var(--accent) 85%, var(--primary-dark) 85%, var(--primary-dark) 100%);
-    background-size: 100% 6px;
-    background-repeat: no-repeat;
-    border-bottom: 1px solid var(--border);
-    overflow: auto;
-    padding-top: 33px;
-    padding-bottom: 27px;
-    text-align: center;
-}
-
-header a {
-    color: var(--text);
-    text-decoration: none;
-}
-
-/* Updated Navigation Styles */
+/* --------------------------------
+   Navbar
+-------------------------------- */
 nav {
-    border-bottom: 1px solid var(--border);
-    padding-top: 17px;
-    padding-bottom: 15px;
-    background: var(--primary);
-    height: 80px;
-    color: var(--secondary);
     display: flex;
-    justify-content: center;
     align-items: center;
-    gap: 2rem;
+    gap: 1.25rem;
+
+    padding: 0.75rem 1.5rem;
+    background-color: var(--bg);
+    border-bottom: 1px solid var(--border);
+
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
 }
 
-/* Circular icon navigation */
+/* --------------------------------
+   Title
+-------------------------------- */
+#title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    white-space: nowrap;
+    margin-right: 1rem;
+    color: var(--text-main);
+}
+
+/* --------------------------------
+   Category icons
+-------------------------------- */
 .nav-icon {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.1);
-    transition: var(--transition);
-    position: relative;
-    cursor: pointer;
+
+    padding: 0.45rem;
+    border-radius: 0.5rem;
+
+    color: var(--text-muted);
     text-decoration: none;
-}
+    font-size: 0.95rem;
 
-.nav-icon:hover {
-    background-color: var(--accent);
-    transform: translateY(-5px);
-}
-
-.nav-icon:hover i {
-    color: var(--secondary);
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
 .nav-icon i {
-    font-size: 1.5rem;
-    color: var(--secondary);
-    transition: var(--transition);
+    font-size: 1rem;
 }
 
-.nav-icon .category-name {
-    position: absolute;
-    bottom: -35px;
-    background-color: var(--text);
-    color: var(--secondary);
-    padding: 6px 12px;
-    border-radius: var(--radius);
-    font-size: 0.8rem;
-    opacity: 0;
-    visibility: hidden;
-    transition: var(--transition);
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 1000;
+.nav-icon:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-main);
 }
 
-.nav-icon .category-name::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-bottom: 5px solid var(--text);
+/* --------------------------------
+   Auth section (right aligned)
+-------------------------------- */
+.auth-section {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
-.nav-icon:hover .category-name {
-    opacity: 1;
-    visibility: visible;
-    bottom: -30px;
+/* --------------------------------
+   User dropdown
+-------------------------------- */
+.user-dropdown {
+    position: relative;
 }
 
-/* Remove old nav styles */
-nav a:not(.nav-icon) {
-    display: none;
-}
+/* Trigger button */
+.user-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
 
-nav form, nav div {
-    display: none;
-}
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.5rem;
 
-a.button, input[type="submit"] {
-    background-color: var(--primary);
-    border-radius: var(--radius);
-    color: var(--secondary);
-    padding: 18px 27px;
+    background: none;
     border: none;
-    display: inline-block;
-    margin-top: 18px;
-    font-weight: 700;
-}
-
-a.button:hover, input[type="submit"]:hover {
-    background-color: var(--primary-dark);
-    color: var(--secondary);
     cursor: pointer;
-    text-decoration: none;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+
+    transition: background-color 0.15s ease;
 }
 
-form div {
-    margin-bottom: 18px;
+.user-trigger:hover {
+    background-color: var(--hover-bg);
 }
 
-form div:last-child {
-    border-top: 1px dashed var(--border);
-}
+/* --------------------------------
+   Dropdown menu
+-------------------------------- */
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.4rem);
 
-form input[type="radio"] {
-    margin-left: 18px;
-}
+    min-width: 10rem;
+    padding: 0.35rem;
 
-form input[type="text"], form input[type="password"], form input[type="email"] {
-    padding: 0.75em 18px;
-    width: 100%;
-}
-
-form input[type=text], form input[type="password"], form input[type="email"], textarea {
-    color: var(--text-light);
-    background: var(--secondary);
+    background-color: var(--bg);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: 0.6rem;
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.08);
+
+    display: none;
+    z-index: 100;
 }
 
-form label {
-    display: inline-block;
-    margin-bottom: 9px;
-}
-
-.error {
-    color: var(--accent);
-    font-weight: bold;
+.user-dropdown.open .dropdown-menu {
     display: block;
 }
 
-.error + textarea, .error + input {
-    border-color: var(--accent) !important;
-    border-width: 2px !important;
-}
+/* Dropdown items */
+.dropdown-menu a,
+.dropdown-menu button {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
 
-textarea {
-    padding: 18px;
     width: 100%;
-    height: 266px;
-}
+    padding: 0.45rem 0.6rem;
 
-button {
     background: none;
-    padding: 0;
     border: none;
-    color: var(--primary);
+    border-radius: 0.45rem;
+
+    font-size: 0.85rem;
+    color: var(--text-muted);
     text-decoration: none;
-}
-
-button:hover {
-    color: var(--primary-dark);
-    text-decoration: underline;
     cursor: pointer;
-}
-
-.snippet {
-    background-color: var(--secondary);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-}
-
-.snippet pre {
-    padding: 18px;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-}
-
-.snippet .metadata {
-    background-color: var(--secondary);
-    color: var(--text-light);
-    padding: 0.75em 18px;
-    overflow: auto;
-}
-
-div.flash {
-    color: var(--secondary);
-    font-weight: bold;
-    background-color: var(--text);
-    padding: 18px;
-    margin-bottom: 36px;
-    text-align: center;
-}
-
-div.error {
-    color: var(--secondary);
-    background-color: var(--accent);
-    padding: 18px;
-    margin-bottom: 36px;
-    font-weight: bold;
-    text-align: center;
-}
-
-table {
-    background: var(--secondary);
-    border: 1px solid var(--border);
-    border-collapse: collapse;
-    width: 100%;
-}
-
-td, th {
     text-align: left;
-    padding: 9px 18px;
+
+    transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-th:last-child, td:last-child {
-    text-align: right;
-    color: var(--text-light);
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-main);
 }
 
-tr {
-    border-bottom: 1px solid var(--border);
+/* Logout emphasis */
+.dropdown-menu button {
+    color: var(--danger);
 }
 
-tr:nth-child(2n) {
-    background-color: var(--secondary);
+/* --------------------------------
+   Google login button
+-------------------------------- */
+.google-login-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+
+    background-color: #16a34a;
+    color: #ffffff;
+
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: background-color 0.15s ease, box-shadow 0.15s ease,
+        transform 0.1s ease;
 }
 
-footer {
-    border-top: 1px solid var(--border);
-    padding-top: 17px;
-    padding-bottom: 15px;
-    background: var(--secondary);
-    height: 60px;
-    color: var(--text-light);
-    text-align: center;
+.google-login-btn:hover {
+    background-color: #15803d;
+    transform: translateY(-1px);
+    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.15);
 }
