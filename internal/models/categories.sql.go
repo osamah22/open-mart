@@ -8,7 +8,7 @@ package models
 import (
 	"context"
 
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const cateogryExists = `-- name: CateogryExists :one
@@ -16,7 +16,7 @@ select Exists(select id, parent_id, name, slug, logo_class from categories where
 `
 
 func (q *Queries) CateogryExists(ctx context.Context, slug string) (bool, error) {
-	row := q.db.QueryRowContext(ctx, cateogryExists, slug)
+	row := q.db.QueryRow(ctx, cateogryExists, slug)
 	var exists bool
 	err := row.Scan(&exists)
 	return exists, err
@@ -26,8 +26,8 @@ const deleteCategory = `-- name: DeleteCategory :exec
 delete from categories where id = $1
 `
 
-func (q *Queries) DeleteCategory(ctx context.Context, id uuid.UUID) error {
-	_, err := q.db.ExecContext(ctx, deleteCategory, id)
+func (q *Queries) DeleteCategory(ctx context.Context, id pgtype.UUID) error {
+	_, err := q.db.Exec(ctx, deleteCategory, id)
 	return err
 }
 
@@ -36,7 +36,7 @@ select id, parent_id, name, slug, logo_class from categories
 `
 
 func (q *Queries) ListCategories(ctx context.Context) ([]Category, error) {
-	rows, err := q.db.QueryContext(ctx, listCategories)
+	rows, err := q.db.Query(ctx, listCategories)
 	if err != nil {
 		return nil, err
 	}
@@ -54,9 +54,6 @@ func (q *Queries) ListCategories(ctx context.Context) ([]Category, error) {
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err

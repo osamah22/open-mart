@@ -1,0 +1,227 @@
+/* --------------------------------
+   Navbar
+-------------------------------- */
+nav {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+
+    padding: 0.75rem 1.5rem;
+    background-color: var(--bg);
+    border-bottom: 1px solid var(--border);
+
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+}
+
+/* --------------------------------
+   Title
+-------------------------------- */
+#title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    white-space: nowrap;
+    margin-right: 1rem;
+    color: var(--text-main);
+}
+
+/* --------------------------------
+   Category icons
+-------------------------------- */
+.nav-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 0.45rem;
+    border-radius: 0.5rem;
+
+    color: var(--text-muted);
+    text-decoration: none;
+
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.nav-icon i {
+    font-size: 1rem;
+}
+
+.nav-icon:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-main);
+}
+
+/* --------------------------------
+   Auth section (right aligned)
+-------------------------------- */
+.auth-section {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* --------------------------------
+   User dropdown
+-------------------------------- */
+.user-dropdown {
+    position: relative;
+}
+
+/* Trigger button */
+.user-trigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    padding: 0.35rem 0.5rem;
+    border-radius: 0.5rem;
+
+    background: none;
+    border: none;
+    cursor: pointer;
+
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+
+    transition: background-color 0.15s ease;
+}
+
+.user-trigger:hover {
+    background-color: var(--hover-bg);
+}
+
+/* Avatar */
+.nav-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border);
+}
+
+/* Arrow */
+.menu-arrow {
+    font-size: 0.7rem;
+    color: #6b7280;
+    transition: transform 0.2s ease;
+}
+
+/* Rotate arrow when open */
+.user-dropdown.open .menu-arrow {
+    transform: rotate(180deg);
+}
+
+/* --------------------------------
+   Dropdown menu
+-------------------------------- */
+.dropdown-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 0.5rem);
+
+    min-width: 160px;
+    padding: 0.4rem;
+
+    background-color: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.08);
+
+    display: none;
+    z-index: 100;
+}
+
+.user-dropdown.open .dropdown-menu {
+    display: block;
+}
+
+/* Dropdown items */
+.dropdown-menu a,
+.dropdown-menu button {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+
+    background: none;
+    border: none;
+    border-radius: 0.45rem;
+
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    text-decoration: none;
+    cursor: pointer;
+    text-align: left;
+
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.dropdown-menu a:hover,
+.dropdown-menu button:hover {
+    background-color: var(--hover-bg);
+    color: var(--text-main);
+}
+
+/* Logout emphasis */
+.dropdown-menu button {
+    color: var(--danger);
+}
+
+/* --------------------------------
+   Google login button
+-------------------------------- */
+.google-login-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+
+    background-color: #16a34a;
+    color: #ffffff;
+
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: background-color 0.15s ease,
+        box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.google-login-btn:hover {
+    background-color: #15803d;
+    transform: translateY(-1px);
+    box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.15);
+}
+
+.navbar {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+/* Left stays left */
+.nav-left {
+    flex-shrink: 0;
+}
+
+/* Center grows */
+.nav-center {
+    display: flex;
+    gap: 1rem;
+    margin-left: 2rem;
+    flex: 1;
+}
+
+/* Right sticks to right */
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}

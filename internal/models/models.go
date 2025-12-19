@@ -5,13 +5,42 @@
 package models
 
 import (
-	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Category struct {
-	ID        uuid.UUID
-	ParentID  uuid.NullUUID
+	ID        pgtype.UUID
+	ParentID  pgtype.UUID
 	Name      string
 	Slug      string
 	LogoClass string
+}
+
+type Post struct {
+	ID         pgtype.UUID
+	UserID     pgtype.UUID
+	CategoryID pgtype.UUID
+	Title      string
+	Content    string
+	CreatedAt  pgtype.Timestamp
+	UpdatedAt  pgtype.Timestamp
+}
+
+type Session struct {
+	Token  string
+	Data   []byte
+	Expiry pgtype.Timestamptz
+}
+
+type User struct {
+	ID                 pgtype.UUID
+	GoogleID           string
+	Email              string
+	Username           string
+	AvatarUrl          pgtype.Text
+	PhoneNumber        pgtype.Text
+	PhoneVerified      bool
+	CreatedAt          pgtype.Timestamptz
+	UpdatedAt          pgtype.Timestamptz
+	LastUsernameChange pgtype.Timestamp
 }

@@ -1,335 +1,46 @@
-:root {
-    --primary: #10b981;
-    --primary-dark: #3a5bd0;
-    --secondary: #f8f9fa;
-    --accent: #ff6b6b;
-    --success: #10b981;
-    --text: #2d3748;
-    --text-light: #718096;
-    --border: #e2e8f0;
-    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    --transition: all 0.3s ease;
-    --radius: 8px;
-}
-
+/* --------------------------------
+   Base reset
+-------------------------------- */
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-size: 18px;
-    font-family: "Ubuntu Mono", monospace;
-}
-html, body {
-    height: 100%;
 }
 
-body {
-    line-height: 1.5;
-    background-color: var(--secondary);
-    color: var(--text);
-    overflow-y: scroll;
+:root {
+    --bg: #ffffff;
+    --border: #e5e7eb;
+    --text-main: #111827;
+    --text-muted: #374151;
+    --hover-bg: #f3f4f6;
+    --accent: #2563eb;
+    --danger: #dc2626;
 }
 
-header, nav, main, footer {
-    padding: 2px calc((100% - 800px) / 2) 0;
+/* --------------------------------
+   Flash messages
+-------------------------------- */
+.flash {
+    padding: 0.6rem 0.9rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
 }
 
-main {
-    margin-top: 54px;
-    margin-bottom: 54px;
-    min-height: calc(100vh - 345px);
-    overflow: auto;
+.flash-error {
+    background: #fee2e2;
+    color: #991b1b;
 }
 
-h1 a {
-    font-size: 36px;
-    font-weight: bold;
-    background-image: url("/static/img/main-logo.webp");
-    background-repeat: no-repeat;
-    background-position: 0px 0px;
-    height: 36px;
-    padding-left: 50px;
-    position: relative;
+.flash-success {
+    background: #dcfce7;
+    color: #166534;
 }
 
-h1 a:hover {
-    text-decoration: none;
-    color: var(--text);
+.flash-info {
+    background: #e0f2fe;
+    color: #075985;
 }
 
-h2 {
-    font-size: 22px;
-    margin-bottom: 36px;
-    position: relative;
-    top: -9px;
-}
-
-a {
-    color: var(--primary);
-    text-decoration: none;
-}
-
-a:hover {
-    color: var(--primary-dark);
-    text-decoration: underline;
-}
-
-textarea, input:not([type="submit"]) {
-    font-size: 18px;
-    font-family: "Ubuntu Mono", monospace;
-}
-
-header {
-    background-image: linear-gradient(to right, var(--text), var(--text) 25%, var(--primary) 25%, var(--primary) 35%, var(--primary-dark) 35%, var(--primary-dark) 45%, var(--success) 45%, var(--success) 55%, var(--accent) 55%, var(--accent) 65%, var(--primary) 65%, var(--primary) 75%, var(--accent) 85%, var(--accent) 85%, var(--primary-dark) 85%, var(--primary-dark) 100%);
-    background-size: 100% 6px;
-    background-repeat: no-repeat;
-    border-bottom: 1px solid var(--border);
-    overflow: auto;
-    padding-top: 33px;
-    padding-bottom: 27px;
-    text-align: center;
-}
-
-header a {
-    color: var(--text);
-    text-decoration: none;
-}
-
-/* Updated Navigation Styles */
-nav {
-    border-bottom: 1px solid var(--border);
-    padding-top: 17px;
-    padding-bottom: 15px;
-    background: var(--primary);
-    height: 80px;
-    color: var(--secondary);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-}
-
-/* Circular icon navigation */
-.nav-icon {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background-color: rgba(255, 255, 255, 0.1);
-    transition: var(--transition);
-    position: relative;
-    cursor: pointer;
-    text-decoration: none;
-}
-
-.nav-icon:hover {
-    background-color: var(--accent);
-    transform: translateY(-5px);
-}
-
-.nav-icon:hover i {
-    color: var(--secondary);
-}
-
-.nav-icon i {
-    font-size: 1.5rem;
-    color: var(--secondary);
-    transition: var(--transition);
-}
-
-.nav-icon .category-name {
-    position: absolute;
-    bottom: -35px;
-    background-color: var(--text);
-    color: var(--secondary);
-    padding: 6px 12px;
-    border-radius: var(--radius);
-    font-size: 0.8rem;
-    opacity: 0;
-    visibility: hidden;
-    transition: var(--transition);
-    white-space: nowrap;
-    pointer-events: none;
-    z-index: 1000;
-}
-
-.nav-icon .category-name::before {
-    content: '';
-    position: absolute;
-    top: -5px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-bottom: 5px solid var(--text);
-}
-
-.nav-icon:hover .category-name {
-    opacity: 1;
-    visibility: visible;
-    bottom: -30px;
-}
-
-/* Remove old nav styles */
-nav a:not(.nav-icon) {
-    display: none;
-}
-
-nav form, nav div {
-    display: none;
-}
-
-a.button, input[type="submit"] {
-    background-color: var(--primary);
-    border-radius: var(--radius);
-    color: var(--secondary);
-    padding: 18px 27px;
-    border: none;
-    display: inline-block;
-    margin-top: 18px;
-    font-weight: 700;
-}
-
-a.button:hover, input[type="submit"]:hover {
-    background-color: var(--primary-dark);
-    color: var(--secondary);
-    cursor: pointer;
-    text-decoration: none;
-}
-
-form div {
-    margin-bottom: 18px;
-}
-
-form div:last-child {
-    border-top: 1px dashed var(--border);
-}
-
-form input[type="radio"] {
-    margin-left: 18px;
-}
-
-form input[type="text"], form input[type="password"], form input[type="email"] {
-    padding: 0.75em 18px;
-    width: 100%;
-}
-
-form input[type=text], form input[type="password"], form input[type="email"], textarea {
-    color: var(--text-light);
-    background: var(--secondary);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-}
-
-form label {
-    display: inline-block;
-    margin-bottom: 9px;
-}
-
-.error {
-    color: var(--accent);
-    font-weight: bold;
-    display: block;
-}
-
-.error + textarea, .error + input {
-    border-color: var(--accent) !important;
-    border-width: 2px !important;
-}
-
-textarea {
-    padding: 18px;
-    width: 100%;
-    height: 266px;
-}
-
-button {
-    background: none;
-    padding: 0;
-    border: none;
-    color: var(--primary);
-    text-decoration: none;
-}
-
-button:hover {
-    color: var(--primary-dark);
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-.snippet {
-    background-color: var(--secondary);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-}
-
-.snippet pre {
-    padding: 18px;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-}
-
-.snippet .metadata {
-    background-color: var(--secondary);
-    color: var(--text-light);
-    padding: 0.75em 18px;
-    overflow: auto;
-}
-
-div.flash {
-    color: var(--secondary);
-    font-weight: bold;
-    background-color: var(--text);
-    padding: 18px;
-    margin-bottom: 36px;
-    text-align: center;
-}
-
-div.error {
-    color: var(--secondary);
-    background-color: var(--accent);
-    padding: 18px;
-    margin-bottom: 36px;
-    font-weight: bold;
-    text-align: center;
-}
-
-table {
-    background: var(--secondary);
-    border: 1px solid var(--border);
-    border-collapse: collapse;
-    width: 100%;
-}
-
-td, th {
-    text-align: left;
-    padding: 9px 18px;
-}
-
-th:last-child, td:last-child {
-    text-align: right;
-    color: var(--text-light);
-}
-
-tr {
-    border-bottom: 1px solid var(--border);
-}
-
-tr:nth-child(2n) {
-    background-color: var(--secondary);
-}
-
-footer {
-    border-top: 1px solid var(--border);
-    padding-top: 17px;
-    padding-bottom: 15px;
-    background: var(--secondary);
-    height: 60px;
-    color: var(--text-light);
-    text-align: center;
+.flash-warning {
+    background: #fef3c7;
+    color: #92400e;
 }

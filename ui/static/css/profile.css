@@ -1,0 +1,47 @@
+
+.profile-container {
+    display: flex;
+    justify-content: center;
+    padding: 3rem 1rem;
+}
+
+.profile-card {
+    display: flex;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 600px;
+    width: 100%;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg);
+}
+
+.profile-avatar img {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.profile-name {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.profile-email,
+.profile-provider,
+.profile-joined {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+.profile-info i {
+    margin-right: 0.4rem;
+}
+

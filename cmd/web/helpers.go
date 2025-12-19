@@ -1,60 +1,76 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
-	"net/http"
-	"runtime/debug"
-	"time"
+	"crypto/rand"
+	"encoding/base64"
+	"encoding/json"
+	"log"
 
-	"github.com/alexedwards/scs/postgresstore"
-	"github.com/alexedwards/scs/v2"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
-// render Retrieve the appropriate template set from the cache based on the page
-// name (like 'home.html'). If no entry exists in the cache with the
-// provided name, then create a new error and call the serverError() helper
-// method that we made earlier and return.
-func (app *Server) render(w http.ResponseWriter, status int, page string, data map[string]any) {
-	ts, ok := app.templateCache[page]
-	if !ok {
-		err := fmt.Errorf("the template %s does not exist", page)
-		app.serverError(w, err)
-		return
-	}
-
-	w.WriteHeader(status)
-
-	err := ts.ExecuteTemplate(w, "base", data)
+func newLogger() *zap.SugaredLogger {
+	// ---- Zap Logger ----
+	cfg := zap.NewProductionConfig()
+	zapLogger, err := cfg.Build()
 	if err != nil {
-		app.serverError(w, err)
+		log.Fatal(err)
 	}
+	defer zapLogger.Sync()
+
+	logger := zapLogger.Sugar()
+	return logger
 }
 
-func (app *Server) serverError(w http.ResponseWriter, err error) {
-	trace := fmt.Sprintf("%s\n%s", err.Error(), debug.Stack())
-	app.errorLog.Output(2, trace)
-	app.render(w, 500, "server-error.html", nil)
+func (s *Server) render(c *gin.Context, status int, tmpl string, data gin.H) {
+	if data == nil {
+		data = gin.H{}
+	}
+	if flashes, ok := c.Get("flashes"); ok {
+		data["flashes"] = flashes
+	}
+
+	if user, ok := c.Get(ContextUserKey); ok {
+		data["user"] = user
+	}
+
+	c.HTML(status, tmpl, data)
 }
 
-func (app *Server) clientError(w http.ResponseWriter, statusCode int) {
-	http.Error(w, http.StatusText(statusCode), http.StatusInternalServerError)
+func generateState() string {
+	b := make([]byte, 32)
+	_, _ = rand.Read(b)
+	return base64.RawURLEncoding.EncodeToString(b)
 }
 
-func (app *Server) notFound(w http.ResponseWriter, r *http.Request) {
-	data := app.newDataTemplate(r)
-	app.render(w, 404, "not-found.html", data)
+func (s *Server) addFlash(c *gin.Context, typ, msg string) {
+	sess := sessions.Default(c)
+
+	// read existing
+	var flashes []Flash
+	if raw, ok := sess.Get(FlashKey).(string); ok && raw != "" {
+		_ = json.Unmarshal([]byte(raw), &flashes)
+	}
+
+	// append
+	flashes = append(flashes, Flash{Type: typ, Message: msg})
+
+	// write back
+	b, _ := json.Marshal(flashes)
+	sess.Set(FlashKey, string(b))
+	_ = sess.Save()
 }
 
-func newSessionManager(conn *sql.DB) *scs.SessionManager {
-	sessionManager := scs.New()
+func (s *Server) ErrorMessage(c *gin.Context, msg string) {
+	s.addFlash(c, "error", msg)
+}
 
-	sessionManager.Store = postgresstore.New(conn)
+func (s *Server) InfoMessage(c *gin.Context, msg string) {
+	s.addFlash(c, "info", msg)
+}
 
-	sessionManager.Lifetime = 24 * time.Hour
-	sessionManager.IdleTimeout = 30 * time.Minute
-	sessionManager.Cookie.HttpOnly = true
-	sessionManager.Cookie.Secure = true // only if using HTTPS
-	sessionManager.Cookie.SameSite = http.SameSiteLaxMode
-	return sessionManager
+func (s *Server) SuccessMessage(c *gin.Context, msg string) {
+	s.addFlash(c, "success", msg)
 }

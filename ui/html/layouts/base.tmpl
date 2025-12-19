@@ -1,0 +1,23 @@
+{{ define "base" }}
+<html>
+
+<head>
+    <title>{{ block "title" . }}OpenMart{{ end }}</title>
+
+    <link rel="stylesheet" href="/static/css/main.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu+Mono:400,700&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+    {{ template "nav" . }}
+    <main>{{ block "content" . }}{{ end }}</main>
+
+    <footer>Powered by <a href="https://golang.org/">Go</a></footer>
+    <script src="/static/js/main.js" type="text/javascript"></script>
+</body>
+
+</html>
+{{ end }}

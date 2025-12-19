@@ -1,0 +1,7 @@
+{{define "flash"}} {{ if .flashes }}
+<div class="flash-container">
+    {{ range .flashes }}
+    <div class="flash flash-{{ .Type }}">{{ .Message }}</div>
+    {{ end }}
+</div>
+{{ end }} {{end}}

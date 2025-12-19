@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	ErrNoCategories      = fmt.Errorf("%w: no categories exists", NotFound)
-	ErrDuplicateCategory = fmt.Errorf("%w: Category name already exists", NameTaken)
+	ErrNoCategories      = fmt.Errorf("No categories exists")
+	ErrDuplicateCategory = fmt.Errorf("Category name already exists")
 )
 
 type CategoryService interface {
