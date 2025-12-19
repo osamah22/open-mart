@@ -12,7 +12,7 @@ func (s *Server) Home(c *gin.Context) {
 		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
-	s.render(c, 200, "home.html", gin.H{
+	s.render(c, 200, "home.tmpl", gin.H{
 		"categories": cats,
 	})
 }

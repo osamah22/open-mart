@@ -1,8 +1,9 @@
 package main
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
-	"github.com/osamah22/open-mart/internal/auth"
 	"github.com/osamah22/open-mart/internal/models"
 
 	"github.com/osamah22/open-mart/internal/services"
@@ -18,9 +19,9 @@ type Server struct {
 	Router          *gin.Engine
 	Logger          *zap.SugaredLogger
 	Config          Config
-	OAuthConfig     *oauth2.Config
 	CategoryService services.CategoryService
-	authService     auth.AuthService
+	OAuthConfig     *oauth2.Config
+	authService     services.AuthService
 }
 
 func NewServer(cfg Config) (*Server, error) {
@@ -34,7 +35,7 @@ func NewServer(cfg Config) (*Server, error) {
 	// services
 	q := models.New(db)
 
-	authSvc := auth.NewService(q)
+	authSvc := services.NewService(q)
 	categorySvc := services.NewCategoryService(q)
 
 	oauthCfg := &oauth2.Config{
@@ -59,18 +60,23 @@ func NewServer(cfg Config) (*Server, error) {
 		CategoryService: categorySvc,
 	}
 	// 1) sessions FIRST
-	store := cookie.NewStore([]byte(cfg.SESSION_KEY))
+	store := cookie.NewStore([]byte(cfg.SESSION_KEY), []byte(cfg.SESSION_KEY))
+	store.Options(sessions.Options{
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   86400 * 1, // 24 hours
+	})
 	r.Use(sessions.Sessions("openmart", store))
 	r.Use(
-		// gin.Recovery(), // or RecoverPanic()
-		recovery(logger),
+		gin.Recovery(), // or RecoverPanic()
+		flashMiddleware(),
 		secureHeaders(),
 		AuthContext(srv.authService),
-		// RequestLogger(logger),
 	)
 
-	// r.LoadHTMLGlob("ui/html/*.html")
-	r.LoadHTMLGlob("ui/html/**/*.html")
+	r.LoadHTMLGlob("ui/html/**/*.tmpl")
 	// r.LoadHTMLGlob("ui/html/pages/*")
 	r.Static("/static", "./ui/static")
 

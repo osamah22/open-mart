@@ -97,12 +97,13 @@ func (q *Queries) GetUserByID(ctx context.Context, id pgtype.UUID) (User, error)
 	return i, err
 }
 
-const updateUserAvatar = `-- name: UpdateUserAvatar :exec
+const updateUserAvatar = `-- name: UpdateUserAvatar :one
 UPDATE
     users
 SET avatar_url = $2,
     updated_at = now()
 WHERE id = $1
+RETURNING id, google_id, email, username, avatar_url, phone_number, phone_verified, created_at, updated_at, last_username_change
 `
 
 type UpdateUserAvatarParams struct {
@@ -110,9 +111,22 @@ type UpdateUserAvatarParams struct {
 	AvatarUrl pgtype.Text
 }
 
-func (q *Queries) UpdateUserAvatar(ctx context.Context, arg UpdateUserAvatarParams) error {
-	_, err := q.db.Exec(ctx, updateUserAvatar, arg.ID, arg.AvatarUrl)
-	return err
+func (q *Queries) UpdateUserAvatar(ctx context.Context, arg UpdateUserAvatarParams) (User, error) {
+	row := q.db.QueryRow(ctx, updateUserAvatar, arg.ID, arg.AvatarUrl)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.GoogleID,
+		&i.Email,
+		&i.Username,
+		&i.AvatarUrl,
+		&i.PhoneNumber,
+		&i.PhoneVerified,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.LastUsernameChange,
+	)
+	return i, err
 }
 
 const updateUsername = `-- name: UpdateUsername :one

@@ -1,0 +1,38 @@
+{{ template "header" . }}
+
+<link rel="stylesheet" href="/static/css/profile.css" />
+
+<section class="profile-container">
+    <div class="profile-card">
+        <!-- Avatar -->
+        <div class="profile-avatar">
+            <img src="{{ if .user.AvatarUrl.Valid }}{{ .user.AvatarUrl.String }}{{ else }}/static/img/avatar-placeholder.png{{ end }}"
+                alt="Profile Avatar" />
+        </div>
+
+        <!-- Info -->
+        <div class="profile-info">
+            <h2 class="profile-name">
+                {{ if .user.Username }} {{ .user.Username }} {{ else }} Anonymous User
+                {{ end }}
+            </h2>
+
+            <p class="profile-email">
+                <i class="fa-solid fa-envelope"></i>
+                {{ .user.Email }}
+            </p>
+
+            <p class="profile-provider">
+                <i class="fa-brands fa-google"></i>
+                Signed in with Google
+            </p>
+
+            <p class="profile-joined">
+                <i class="fa-regular fa-clock"></i>
+                Joined {{ if .user.CreatedAt.Valid }} {{ .user.CreatedAt.Time.Format "02 Jan 2006" }} {{ end }}
+            </p>
+        </div>
+    </div>
+</section>
+
+{{ template "footer" . }}

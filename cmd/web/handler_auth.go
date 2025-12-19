@@ -11,7 +11,11 @@ import (
 	"golang.org/x/oauth2"
 )
 
-func (s *Server) GoogleLogin(c *gin.Context) {
+func (s *Server) HandleProfile(c *gin.Context) {
+	s.render(c, 200, "profile.tmpl", nil)
+}
+
+func (s *Server) HandleGoogleLogin(c *gin.Context) {
 	state := generateState()
 
 	// ✅ THIS IS CRITICAL
@@ -23,21 +27,21 @@ func (s *Server) GoogleLogin(c *gin.Context) {
 		300,
 		"/",
 		"",
-		false, // Secure = false for localhost
+		true,
 		true,
 	)
 
 	url := s.OAuthConfig.AuthCodeURL(
 		state,
 		oauth2.AccessTypeOnline,
-		oauth2.SetAuthURLParam("prompt", "select_account"),
-		oauth2.SetAuthURLParam("prompt", "consent"),
+		// oauth2.SetAuthURLParam("prompt", "select_account"),
+		// oauth2.SetAuthURLParam("prompt", "consent"),
 	)
 
 	c.Redirect(http.StatusFound, url)
 }
 
-func (s *Server) GoogleCallback(c *gin.Context) {
+func (s *Server) HandleGoogleCallback(c *gin.Context) {
 	ctx := c.Request.Context()
 
 	// ---- CSRF state check ----
@@ -119,13 +123,12 @@ func (s *Server) GoogleCallback(c *gin.Context) {
 	c.Redirect(http.StatusSeeOther, "/")
 }
 
-func (s *Server) Logout(c *gin.Context) {
+func (s *Server) HandleLogout(c *gin.Context) {
 	sess := sessions.Default(c)
 
 	// 1. Clear session data
 	sess.Clear()
 	_ = sess.Save()
-	sess.Set(ContextFlashKey, "info: Logged out successfully")
 
 	// 3. Redirect
 	c.Redirect(http.StatusSeeOther, "/")

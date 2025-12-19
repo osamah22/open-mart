@@ -13,12 +13,13 @@ INSERT INTO users (google_id, email, username, phone_number, avatar_url)
     VALUES ($1, $2, $3, $4, $5)
 RETURNING *;
 
--- name: UpdateUserAvatar :exec
+-- name: UpdateUserAvatar :one
 UPDATE
     users
 SET avatar_url = $2,
     updated_at = now()
-WHERE id = $1;
+WHERE id = $1
+RETURNING *;
 
 -- name: UpdateUsername :one
 UPDATE

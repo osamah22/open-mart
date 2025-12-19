@@ -1,0 +1,46 @@
+{{ define "nav" }}
+<nav class="navbar">
+    <link rel="stylesheet" href="/static/css/nav.css" />
+    <link rel="stylesheet" href="/static/css/all.min.css" />
+
+    <!-- LEFT -->
+    <div class="nav-left">
+        <h1 id="title">Open Mart</h1>
+    </div>
+
+    <!-- CENTER -->
+    <div class="nav-center">
+        {{ range .categories }} {{ if not .ParentID.Valid }}
+        <a href="/{{ .Slug }}" class="nav-icon" title="{{ .Name }}">
+            <i class="{{ .LogoClass }}"></i>
+        </a>
+        {{ end }} {{ end }}
+    </div>
+
+    <!-- RIGHT -->
+    <div class="nav-right">
+        {{ if .user }}
+        <div class="user-dropdown" id="userDropdown">
+            <button type="button" class="user-trigger avatar-trigger" id="userDropdownBtn">
+                <img src="{{ .user.AvatarUrl.String }}" class="nav-avatar" />
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+
+            <div class="dropdown-menu">
+                <a href="/profile"> <i class="fa-solid fa-user"></i> Profile </a>
+                <form method="POST" action="/auth/logout">
+                    <button type="submit">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+        {{ else }}
+        <a href="/auth/google" class="google-login-btn">
+            <i class="fa-brands fa-google"></i>
+            <span>Sign in with Google</span>
+        </a>
+        {{ end }}
+    </div>
+</nav>
+{{ end }}

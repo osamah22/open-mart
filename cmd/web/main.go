@@ -21,7 +21,7 @@ func main() {
 	}
 
 	// 3️⃣ Run server
-	if err := srv.Router.Run("localhost:" + strconv.Itoa(cfg.PORT)); err != nil {
+	if err := srv.Router.RunTLS("localhost:"+strconv.Itoa(cfg.PORT), "./cert/server.crt", "./cert/server.key"); err != nil {
 		log.Fatal(err)
 	}
 }

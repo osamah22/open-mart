@@ -16,6 +16,16 @@ type Category struct {
 	LogoClass string
 }
 
+type Post struct {
+	ID         pgtype.UUID
+	UserID     pgtype.UUID
+	CategoryID pgtype.UUID
+	Title      string
+	Content    string
+	CreatedAt  pgtype.Timestamp
+	UpdatedAt  pgtype.Timestamp
+}
+
 type Session struct {
 	Token  string
 	Data   []byte

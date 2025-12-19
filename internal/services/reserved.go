@@ -1,4 +1,4 @@
-package auth
+package services
 
 // a list of some usernames that are not allowed for normal users
 var reservedUsernames = map[string]struct{}{
